@@ -13,3 +13,45 @@
 :root {
   --variable: "de ejemplo";
 }
+
+/* ----------------------------------------------------------------------- */
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+
+  flex-grow: 1;
+  background-color: aqua;
+}
+
+/* https://spin.atomicobject.com/2015/07/14/css-responsive-square/ */
+/* Hacer que sea responsivo a width >>> height */
+.board {
+  display: grid;
+  grid-template: repeat(4, 1fr) / repeat(4, 1fr);
+
+  height: 70%;
+  width: 70%;
+  /* width: clamp(250px, 50%, 600px); */
+
+  background-color: grey;
+}
+
+.board > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 3rem;
+  font-weight: bold;
+}
