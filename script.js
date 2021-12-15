@@ -20,9 +20,9 @@ document.getElementById("author").innerHTML = author;
 const boardDisplay = document.getElementById("board");
 const scoreDisplay = document.getElementById("score");
 
-let boardWidth = 4;
-let boardHeight = 4;
-const squares = [];
+let ncols = 4;
+let nrows = 4;
+const board = [];
 
 // -----------------------------------------------------------------------
 
@@ -33,16 +33,22 @@ const squares = [];
 
 function start() {
   console.log("starting...");
-  document.addEventListener('keyup', control);
+  document.addEventListener("keyup", controlKeyUp);
   createBoard();
 }
 
 // Initializes the board
 function createBoard() {
-  for (let i = 0; i < boardWidth * boardHeight; i++) {
-    const square = document.createElement("div");
-    boardDisplay.appendChild(square);
-    squares.push(square);
+  for (let i = 0; i < nrows; i++) {
+    const row = [];
+
+    for (let j = 0; j < ncols; j++) {
+      const square = document.createElement("div");
+      boardDisplay.appendChild(square);
+      row.push(square);
+    }
+
+    board.push(row);
   }
 
   fillBoard();
@@ -51,52 +57,73 @@ function createBoard() {
 
 // Randomly fills an empty position (square) on the board
 function fillBoard() {
-  const random = Math.floor(Math.random() * squares.length);
-  const randomSquare = squares[random];
+  const row = Math.floor(Math.random() * nrows);
+  const col = Math.floor(Math.random() * ncols);
+  const randomSquare = board[row][col];
 
   if (randomSquare.innerHTML.length === 0) {
     randomSquare.innerHTML = 2;
   } else fillBoard();
 }
 
-// Returns squares as an array of ints
-function getSquares() {
-  return squares.map((square) => +square.innerHTML);
+// Moves the squares in `dir` direction
+function move(dir) {
+  const [vectors, elemsPerVector] = ["r", "l"].includes(dir)
+    ? [board, ncols]
+    : [transpose(board), ncols];
+
+  for (const vector of vectors) {
+    const intVector = vector.map((squareHTML) => +squareHTML.innerHTML);
+    let newVector = intVector.filter((n) => n);
+    const missingValues = Array(elemsPerVector - newVector.length).fill("");
+    newVector = ["r", "d"].includes(dir)
+      ? missingValues.concat(newVector)
+      : newVector.concat(missingValues);
+
+    for (const [i, square] of vector.entries()) {
+      square.innerHTML = newVector[i];
+    }
+  }
+
+  // TODO: check gameover
 }
 
-function moveRight() {
-  const intSquares = getSquares();
+// Transposes the input matrix
+function transpose(M) {
+  return M[0].map((_, i) => M.map((row) => row[i]));
+}
 
-  for (let i = 0; i < boardWidth; i++) {
-    const row = intSquares.slice(i * boardWidth, (i + 1) * boardWidth);
-    let newRow = row.filter((n) => n);
-    const missingValues = boardWidth - newRow.length;
-    newRow = Array(missingValues).fill(0).concat(newRow);
+// Combines rows or columns after each move
+function combineVectors(dir) {
+  const vectors = ["r", "l"].includes(dir) ? board : transpose(board);
 
-    for (let j = 0; j < 4; j++) {
-      squares[i * boardWidth + j].innerHTML = newRow[j];
+  for (let vector of vectors) {
+    if (dir == "r" || dir == "d") {
+      vector = vector.slice().reverse();
+    }
+
+    // Ignore last element
+    for (let i = 0; i < vector.length - 1; i++) {
+      const squareValue = +vector[i].innerHTML;
+      const nextSquareValue = +vector[i + 1].innerHTML;
+
+      if (squareValue == nextSquareValue) {
+        vector[i].innerHTML = squareValue * 2;
+        vector[i + 1].innerHTML = "";
+        addScore(squareValue * 2);
+        i++;
+      }
     }
   }
 }
 
-function combineRow() {}
-
-function move(movement) {
-  //   switch (movement) {
-  //     case "r":
-  //       break;
-  //     case "l":
-  //       break;
-  //     case "u":
-  //       break;
-  //     case "d":
-  //       break;
-  //     default:
-  //       console.log("Invalid movement");
-  //   }
+// Adds `x` to score
+function addScore(x) {
+  scoreDisplay.innerHTML = +scoreDisplay.innerHTML + x;
 }
 
-function control(e) {
+// Key up event controller
+function controlKeyUp(e) {
   switch (e.keyCode) {
     case 39:
       keyRight();
@@ -114,7 +141,32 @@ function control(e) {
 }
 
 function keyRight() {
-  moveRight();
+  move("r");
+  combineVectors("r");
+  // TODO: dont fill the board if no square moved
+  setTimeout(fillBoard, 300);
+  move("r");
+}
+
+function keyLeft() {
+  move("l");
+  combineVectors("l");
+  setTimeout(fillBoard, 300);
+  move("l");
+}
+
+function keyUp() {
+  move("u");
+  combineVectors("u");
+  setTimeout(fillBoard, 300);
+  move("u");
+}
+
+function keyDown() {
+  move("d");
+  combineVectors("d");
+  setTimeout(fillBoard, 300);
+  move("d");
 }
 
 // -----------------------------------------------------------------------

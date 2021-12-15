@@ -7,11 +7,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  outline: 1px solid red;
+  /* outline: 1px solid red; */
 }
 
 :root {
-  --variable: "de ejemplo";
+  --color-background: hsl(39, 24%, 86%);
+  --color-board: hsl(184, 39%, 80%);
+  --color-square: hsla(0, 0%, 100%, 0.35);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -31,7 +33,7 @@ body {
   gap: 3rem;
 
   flex-grow: 1;
-  background-color: aqua;
+  background-color: var(--color-background);
 }
 
 /* https://spin.atomicobject.com/2015/07/14/css-responsive-square/ */
@@ -44,7 +46,10 @@ body {
   width: 70%;
   /* width: clamp(250px, 50%, 600px); */
 
-  background-color: grey;
+  gap: 2rem;
+  padding: 1rem;
+  border-radius: 5px;
+  background-color: var(--color-board);
 }
 
 .board > div {
@@ -54,4 +59,6 @@ body {
 
   font-size: 3rem;
   font-weight: bold;
+  border-radius: 5px;
+  background-color: var(--color-square);
 }
