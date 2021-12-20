@@ -135,6 +135,37 @@ function addScore(x) {
   scoreDisplay.innerHTML = +scoreDisplay.innerHTML + x;
 }
 
+function isGameover() {
+  const intBoard = board.map((row) => row.map((square) => +square.innerHTML));
+
+  if (intBoard.some((row) => row.includes(0))) {
+    console.log("zeros");
+    return false;
+  }
+  // Check for combinable squares
+  else {
+    for (let i = 0; i < nrows; i++) {
+      for (let j = 0; j < ncols; j++) {
+        const current = intBoard[i][j];
+        const neighbors = [
+          intBoard[i + 1]?.[j],
+          intBoard[i - 1]?.[j],
+          intBoard[i]?.[j + 1],
+          intBoard[i]?.[j - 1],
+        ];
+
+        console.log("current ", "(", i, j, ") =", intBoard[i][j]);
+        console.log("neighbors = ", neighbors);
+        if (neighbors.some((n) => n === current)) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 // Key up event controller
 function controlKeyUp(e) {
   switch (e.keyCode) {
@@ -155,11 +186,17 @@ function controlKeyUp(e) {
 
 function moveEvent(dir) {
   const updated = move(dir);
-  if (updated) {
-    setTimeout(fillBoard, 300);
-  }
 
-  // TODO: check gameover
+  setTimeout(function () {
+    if (updated) {
+      fillBoard();
+    }
+
+    if (isGameover()) {
+      console.log("gameover!");
+      document.removeEventListener("keyup", controlKeyUp);
+    }
+  }, 300);
 }
 
 // -----------------------------------------------------------------------
