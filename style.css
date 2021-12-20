@@ -36,15 +36,11 @@ body {
   background-color: var(--color-background);
 }
 
-/* https://spin.atomicobject.com/2015/07/14/css-responsive-square/ */
-/* Hacer que sea responsivo a width >>> height */
 .board {
   display: grid;
   grid-template: repeat(4, 1fr) / repeat(4, 1fr);
 
-  height: 70%;
-  width: 70%;
-  /* width: clamp(250px, 50%, 600px); */
+  /* height and width dynamically set by js */
 
   gap: 2rem;
   padding: 1rem;

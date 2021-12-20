@@ -33,7 +33,9 @@ const board = [];
 
 function start() {
   console.log("starting...");
+  resizeBoard();
   document.addEventListener("keyup", controlKeyUp);
+  window.addEventListener("resize", resizeBoard);
   createBoard();
 }
 
@@ -139,7 +141,6 @@ function isGameover() {
   const intBoard = board.map((row) => row.map((square) => +square.innerHTML));
 
   if (intBoard.some((row) => row.includes(0))) {
-    console.log("zeros");
     return false;
   }
   // Check for combinable squares
@@ -154,8 +155,6 @@ function isGameover() {
           intBoard[i]?.[j - 1],
         ];
 
-        console.log("current ", "(", i, j, ") =", intBoard[i][j]);
-        console.log("neighbors = ", neighbors);
         if (neighbors.some((n) => n === current)) {
           return false;
         }
@@ -197,6 +196,15 @@ function moveEvent(dir) {
       document.removeEventListener("keyup", controlKeyUp);
     }
   }, 300);
+}
+
+function resizeBoard() {
+  const size = Math.max(
+    400,
+    Math.min(window.innerWidth, window.innerHeight) * 0.6
+  );
+  boardDisplay.style.width = size + "px";
+  boardDisplay.style.height = size + "px";
 }
 
 // -----------------------------------------------------------------------
