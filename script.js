@@ -67,7 +67,8 @@ function fillBoard() {
 }
 
 // Moves the squares in `dir` direction
-function move(dir, combine=true) {
+function move(dir, combine = true) {
+  let moved = false;
   const [vectors, elemsPerVector] = ["r", "l"].includes(dir)
     ? [board, ncols]
     : [transpose(board), ncols];
@@ -80,16 +81,17 @@ function move(dir, combine=true) {
       ? missingValues.concat(newVector)
       : newVector.concat(missingValues);
 
+    moved ||= intVector.some((e, i) => e != +newVector[i]);
+
     for (const [i, square] of vector.entries()) {
       square.innerHTML = newVector[i];
     }
   }
 
   if (combine) {
-    combineVectors(dir, vectors);
+    const combined = combineVectors(dir, vectors);
+    return moved || combined;
   }
-
-  // TODO: check gameover
 }
 
 // Transposes the input matrix
@@ -99,6 +101,8 @@ function transpose(M) {
 
 // Combines rows or columns after each move
 function combineVectors(dir, vectors) {
+  let combined = false;
+
   for (let vector of vectors) {
     // Vector must be iterated in the direction of movement
     if (dir == "r" || dir == "d") {
@@ -110,16 +114,20 @@ function combineVectors(dir, vectors) {
       const squareValue = +vector[i].innerHTML;
       const nextSquareValue = +vector[i + 1].innerHTML;
 
-      if (squareValue == nextSquareValue) {
+      if (squareValue && squareValue === nextSquareValue) {
         vector[i].innerHTML = squareValue * 2;
         vector[i + 1].innerHTML = "";
         addScore(squareValue * 2);
+        combined = true;
         i++;
       }
     }
   }
 
-  move(dir, false)
+  if (combined) {
+    move(dir, false);
+  }
+  return combined;
 }
 
 // Adds `x` to score
@@ -131,38 +139,27 @@ function addScore(x) {
 function controlKeyUp(e) {
   switch (e.keyCode) {
     case 39:
-      keyRight();
+      moveEvent("r");
       break;
     case 37:
-      keyLeft();
+      moveEvent("l");
       break;
     case 38:
-      keyUp();
+      moveEvent("u");
       break;
     case 40:
-      keyDown();
+      moveEvent("d");
       break;
   }
 }
 
-function keyRight() {
-  move("r");
-  setTimeout(fillBoard, 300);
-}
+function moveEvent(dir) {
+  const updated = move(dir);
+  if (updated) {
+    setTimeout(fillBoard, 300);
+  }
 
-function keyLeft() {
-  move("l");
-  setTimeout(fillBoard, 300);
-}
-
-function keyUp() {
-  move("u");
-  setTimeout(fillBoard, 300);
-}
-
-function keyDown() {
-  move("d");
-  setTimeout(fillBoard, 300);
+  // TODO: check gameover
 }
 
 // -----------------------------------------------------------------------
