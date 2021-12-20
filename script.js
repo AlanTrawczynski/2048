@@ -67,7 +67,7 @@ function fillBoard() {
 }
 
 // Moves the squares in `dir` direction
-function move(dir) {
+function move(dir, combine=true) {
   const [vectors, elemsPerVector] = ["r", "l"].includes(dir)
     ? [board, ncols]
     : [transpose(board), ncols];
@@ -85,6 +85,10 @@ function move(dir) {
     }
   }
 
+  if (combine) {
+    combineVectors(dir, vectors);
+  }
+
   // TODO: check gameover
 }
 
@@ -94,10 +98,9 @@ function transpose(M) {
 }
 
 // Combines rows or columns after each move
-function combineVectors(dir) {
-  const vectors = ["r", "l"].includes(dir) ? board : transpose(board);
-
+function combineVectors(dir, vectors) {
   for (let vector of vectors) {
+    // Vector must be iterated in the direction of movement
     if (dir == "r" || dir == "d") {
       vector = vector.slice().reverse();
     }
@@ -115,6 +118,8 @@ function combineVectors(dir) {
       }
     }
   }
+
+  move(dir, false)
 }
 
 // Adds `x` to score
@@ -142,31 +147,22 @@ function controlKeyUp(e) {
 
 function keyRight() {
   move("r");
-  combineVectors("r");
-  // TODO: dont fill the board if no square moved
   setTimeout(fillBoard, 300);
-  move("r");
 }
 
 function keyLeft() {
   move("l");
-  combineVectors("l");
   setTimeout(fillBoard, 300);
-  move("l");
 }
 
 function keyUp() {
   move("u");
-  combineVectors("u");
   setTimeout(fillBoard, 300);
-  move("u");
 }
 
 function keyDown() {
   move("d");
-  combineVectors("d");
   setTimeout(fillBoard, 300);
-  move("d");
 }
 
 // -----------------------------------------------------------------------
