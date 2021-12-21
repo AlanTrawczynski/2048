@@ -19,10 +19,12 @@ document.getElementById("author").innerHTML = author;
 //    3. Uso general
 const boardDisplay = document.getElementById("board");
 const scoreDisplay = document.getElementById("score");
+const newGameButton = document.getElementById("new-game");
 
 let ncols = 4;
 let nrows = 4;
-const board = [];
+let board = [];
+const boardDisplaySize = 0.6; // [0, 1]: portion of window size
 
 // -----------------------------------------------------------------------
 
@@ -34,13 +36,36 @@ const board = [];
 function start() {
   console.log("starting...");
   resizeBoard();
+  loadBoard();
+
   document.addEventListener("keyup", controlKeyUp);
   window.addEventListener("resize", resizeBoard);
-  createBoard();
+  newGameButton.addEventListener("click", newGame);
+}
+
+// Loads board from localStorage
+function loadBoard() {
+  const intBoard = JSON.parse(localStorage.getItem("board"));
+  const score = localStorage.getItem("score");
+
+  if (intBoard !== null) {
+    createBoardFromMatrix(intBoard);
+    scoreDisplay.innerHTML = score;
+  } else {
+    createBoard();
+  }
+}
+
+// Saves board to localStorage
+function saveBoard() {
+  localStorage.setItem("board", JSON.stringify(getIntBoard()));
+  localStorage.setItem("score", scoreDisplay.innerHTML);
 }
 
 // Initializes the board
 function createBoard() {
+  const localBoard = [];
+
   for (let i = 0; i < nrows; i++) {
     const row = [];
 
@@ -49,12 +74,13 @@ function createBoard() {
       boardDisplay.appendChild(square);
       row.push(square);
     }
-
-    board.push(row);
+    localBoard.push(row);
   }
 
+  board = localBoard;
   fillBoard();
   fillBoard();
+  saveBoard();
 }
 
 // Randomly fills an empty position (square) on the board
@@ -66,6 +92,26 @@ function fillBoard() {
   if (randomSquare.innerHTML.length === 0) {
     randomSquare.innerHTML = 2;
   } else fillBoard();
+}
+
+// Initializes the board from a matrix of ints
+function createBoardFromMatrix(intBoard) {
+  board = intBoard.map((row) =>
+    row.map(function (value) {
+      const square = document.createElement("div");
+      square.innerHTML = value != 0 ? value : "";
+      boardDisplay.appendChild(square);
+      return square;
+    })
+  );
+
+  nrows = intBoard.length;
+  ncols = intBoard[0].length;
+}
+
+// Returns an int version of board
+function getIntBoard() {
+  return board.map((row) => row.map((square) => +square.innerHTML));
 }
 
 // Moves the squares in `dir` direction
@@ -138,7 +184,7 @@ function addScore(x) {
 }
 
 function isGameover() {
-  const intBoard = board.map((row) => row.map((square) => +square.innerHTML));
+  const intBoard = getIntBoard();
 
   if (intBoard.some((row) => row.includes(0))) {
     return false;
@@ -190,21 +236,26 @@ function moveEvent(dir) {
     if (updated) {
       fillBoard();
     }
-
     if (isGameover()) {
       console.log("gameover!");
       document.removeEventListener("keyup", controlKeyUp);
     }
+    saveBoard();
   }, 300);
 }
 
 function resizeBoard() {
   const size = Math.max(
-    400,
-    Math.min(window.innerWidth, window.innerHeight) * 0.6
+    250,
+    Math.min(window.innerWidth, window.innerHeight) * boardDisplaySize
   );
   boardDisplay.style.width = size + "px";
   boardDisplay.style.height = size + "px";
+}
+
+function newGame() {
+  boardDisplay.innerHTML = ""; // Remove current board
+  createBoard();
 }
 
 // -----------------------------------------------------------------------

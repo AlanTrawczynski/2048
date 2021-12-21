@@ -59,6 +59,11 @@ body {
   background-color: var(--color-square);
 }
 
+.new-game {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+
 /* ----------------------------------------------------------------------- */
 
 header {
