@@ -255,6 +255,7 @@ function resizeBoard() {
 
 function newGame() {
   boardDisplay.innerHTML = ""; // Remove current board
+  scoreDisplay.innerHTML = 0; // Reset score
   createBoard();
 }
 
