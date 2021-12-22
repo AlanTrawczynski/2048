@@ -25,8 +25,21 @@
 
       <div class="board" id="board"></div>
 
-      <div class="buttons-container">
-        <button class="new-game" id="new-game">new game</button>
+      <div class="control-container">
+        <div class="slider-container">
+          <label for="board-size"
+            >Board size: <span id="boardSizeValue"></span
+          ></label>
+          <input
+            type="range"
+            min="3"
+            max="8"
+            name="board-size"
+            class="slider"
+            id="boardSizeSlider"
+          />
+        </div>
+        <button class="new-game" id="newGameButton">new game</button>
       </div>
     </div>
 

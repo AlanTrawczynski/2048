@@ -38,11 +38,10 @@ body {
 
 .board {
   display: grid;
-  grid-template: repeat(4, 1fr) / repeat(4, 1fr);
-
+  /* grid-template dynamically set by js */
   /* height and width dynamically set by js */
 
-  gap: 2rem;
+  gap: 6%;
   padding: 1rem;
   border-radius: 5px;
   background-color: var(--color-board);
@@ -53,10 +52,25 @@ body {
   justify-content: center;
   align-items: center;
 
-  font-size: 3rem;
+  /* font-size: 3rem; */
   font-weight: bold;
   border-radius: 5px;
   background-color: var(--color-square);
+}
+
+/* .board > .square-0 {
+  font-size: 0;
+} */
+
+.control-container {
+  display: flex;
+  gap: 3rem;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .new-game {
