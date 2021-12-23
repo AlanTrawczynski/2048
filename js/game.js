@@ -1,15 +1,14 @@
 class Game {
   constructor(container) {
     this.container = container;
-    this.isSaved = localStorage.getItem("boardValues") !== null;
     this.isGameover = false;
-
     this.boardValues = null;
     this.board = null;
     this.score = null;
     this.size = null;
 
-    if (this.isSaved) {
+    const isSaved = localStorage.getItem("boardValues") === null;
+    if (isSaved) {
       this.load();
     } else {
       this.newGame(4);
@@ -29,7 +28,6 @@ class Game {
   save() {
     localStorage.setItem("boardValues", JSON.stringify(this.boardValues));
     localStorage.setItem("score", this.score);
-    this.isSaved = true;
   }
 
   // Creates a new game with given size
@@ -174,6 +172,8 @@ class Game {
     }
 
     this.isGameover = true;
+    localStorage.removeItem("boardValues");
+    localStorage.removeItem("score");
   }
 }
 
