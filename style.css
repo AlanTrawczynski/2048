@@ -36,10 +36,17 @@ body {
   background-color: var(--color-background);
 }
 
+.gameover-message {
+  display: none;
+  position: absolute;
+}
+
 .board {
   display: grid;
   /* grid-template dynamically set by js */
   /* height and width dynamically set by js */
+  height: max(250px, min(60vw, 60vh));
+  width: max(250px, min(60vw, 60vh));
 
   gap: 6%;
   padding: 1rem;
@@ -52,15 +59,11 @@ body {
   justify-content: center;
   align-items: center;
 
-  /* font-size: 3rem; */
+  font-size: 3rem;
   font-weight: bold;
   border-radius: 5px;
   background-color: var(--color-square);
 }
-
-/* .board > .square-0 {
-  font-size: 0;
-} */
 
 .control-container {
   display: flex;

@@ -37,7 +37,6 @@ const boardDisplaySize = 0.6; // [0, 1]: portion of window size
 function start() {
   console.log("starting...");
   addEventListeners();
-  resizeBoard();
   updateDisplay();
 }
 
@@ -45,7 +44,6 @@ function addEventListeners() {
   document.addEventListener("keyup", controlKeyUp);
   newGameButton.addEventListener("click", newGame);
   sizeSlider.addEventListener("input", controlSizeSlider);
-  window.addEventListener("resize", resizeBoard);
 }
 
 function updateDisplay() {
@@ -87,15 +85,6 @@ function newGame() {
 
 function controlSizeSlider() {
   sizeDisplay.innerHTML = sizeSlider.value;
-}
-
-function resizeBoard() {
-  const size = Math.max(
-    250,
-    Math.min(window.innerWidth, window.innerHeight) * boardDisplaySize
-  );
-  boardDisplay.style.width = size + "px";
-  boardDisplay.style.height = size + "px";
 }
 
 // -----------------------------------------------------------------------
