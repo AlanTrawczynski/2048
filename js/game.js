@@ -128,24 +128,18 @@ class Game {
   combineVectors(dir) {
     let combined = false;
     const isHorizontal = ["R", "L"].includes(dir),
-      vectors = isHorizontal ? this.boardValues : transpose(this.boardValues),
       [start, end, step] = ["L", "U"].includes(dir)
         ? [0, this.size - 1, 1]
         : [this.size - 1, 0, -1];
 
-    for (let [i, vector] of vectors.entries()) {
+    for (let i = 0; i < this.size; i++) {
       for (let j = start; j !== end; j += step) {
-        const value = vector[j],
-          nextValue = vector[j + step];
+        const [row, col] = isHorizontal ? [i, j] : [j, i],
+          [nextRow, nextCol] = isHorizontal ? [i, j + step] : [j + step, i],
+          value = this.boardValues[row][col],
+          nextValue = this.boardValues[nextRow][nextCol];
 
         if (value !== 0 && value === nextValue) {
-          const [row, col] = isHorizontal ? [i, j] : [j, i];
-          const [nextRow, nextCol] = isHorizontal
-            ? [i, j + step]
-            : [j + step, i];
-
-          vector[j] *= 2;
-          vector[j + step] = 0;
           this.setSquare(row, col, value * 2);
           this.setSquare(nextRow, nextCol, 0);
           this.score += value * 2;
