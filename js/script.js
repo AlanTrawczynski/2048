@@ -22,7 +22,8 @@ const boardDisplay = document.getElementById("board"),
   sizeSlider = document.getElementById("boardSizeSlider");
 
 const sizeDisplay = document.getElementById("boardSizeValue"),
-  scoreDisplay = document.getElementById("score");
+  scoreDisplay = document.getElementById("score"),
+  gameoverDisplay = document.getElementById("gameoverScreen");
 
 let game = new Game(boardDisplay);
 const boardDisplaySize = 0.6; // [0, 1]: portion of window size
@@ -56,7 +57,6 @@ function updateDisplay() {
 // Key up event controller
 function controlKeyUp(e) {
   if (game.isGameover) {
-    console.log("gameover!");
     return;
   }
 
@@ -75,11 +75,19 @@ function controlKeyUp(e) {
       break;
   }
 
+  if (game.isGameover) {
+    gameoverDisplay.classList.add("gameover-message--visible");
+  }
   scoreDisplay.innerHTML = game.score;
+}
+
+function showGameover() {
+  gameoverDisplay.classList.add("gameover-message--visible");
 }
 
 function newGame() {
   game.newGame(sizeSlider.valueAsNumber);
+  gameoverDisplay.classList.remove("gameover-message--visible");
   updateDisplay();
 }
 

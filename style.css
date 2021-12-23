@@ -13,6 +13,7 @@
 :root {
   --color-background: hsl(39, 24%, 86%);
   --color-board: hsl(184, 39%, 80%);
+  --color-gameover: hsla(0, 0%, 60%, 0.7);
   --color-square: hsla(0, 0%, 100%, 0.35);
 }
 
@@ -36,9 +37,31 @@ body {
   background-color: var(--color-background);
 }
 
+.board-container {
+  position: relative;
+}
+
 .gameover-message {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  opacity: 0;
+  border-radius: 5px;
+  font-size: 15vw;
+  text-align: center;
+  background-color: var(--color-gameover);
+}
+.gameover-message--visible {
+  opacity: 1;
+  transition-duration: 2.5s;
+  transition-delay: 0.5s;
 }
 
 .board {
