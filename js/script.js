@@ -43,6 +43,7 @@ function start() {
 
 function addEventListeners() {
   document.addEventListener("keyup", controlKeyUp);
+  window.addEventListener("resize", controlResize);
   newGameButton.addEventListener("click", newGame);
   sizeSlider.addEventListener("input", controlSizeSlider);
 }
@@ -52,6 +53,7 @@ function updateDisplay() {
   sizeDisplay.innerHTML = game.size;
   sizeSlider.value = game.size;
   boardDisplay.style.gridTemplate = `repeat(${game.size}, 1fr) / repeat(${game.size}, 1fr)`;
+  controlResize();
 }
 
 // Key up event controller
@@ -89,6 +91,16 @@ function newGame() {
   game.newGame(sizeSlider.valueAsNumber);
   gameoverDisplay.classList.remove("gameover-message--visible");
   updateDisplay();
+}
+
+function controlResize() {
+  const boardGap = (boardDisplay.clientWidth * 0.2) / game.size,
+    squareFontSize = (boardDisplay.clientWidth * 0.5) / game.size;
+
+  boardDisplay.style.gap = boardGap + "px";
+  Array.from(boardDisplay.children).forEach(
+    (child) => (child.style.fontSize = squareFontSize + "px")
+  );
 }
 
 function controlSizeSlider() {
