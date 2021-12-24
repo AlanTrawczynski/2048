@@ -7,7 +7,8 @@ class Game {
     this.score = null;
     this.size = null;
 
-    const isSaved = localStorage.getItem("boardValues") === null;
+    const isSaved = localStorage.getItem("boardValues") !== null;
+    console.log(localStorage.getItem("boardValues"))
     if (isSaved) {
       this.load();
     } else {
@@ -116,8 +117,8 @@ class Game {
       const combined = this.combineVectors(dir);
       if (moved || combined) {
         this.fillSquare();
-        this.checkGameover();
         this.save();
+        this.checkGameover();
       }
     }
   }
@@ -172,8 +173,7 @@ class Game {
     }
 
     this.isGameover = true;
-    localStorage.removeItem("boardValues");
-    localStorage.removeItem("score");
+    localStorage.clear();
   }
 }
 
