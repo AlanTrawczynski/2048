@@ -15,6 +15,8 @@
   --color-board: hsl(184, 39%, 80%);
   --color-gameover: hsla(0, 0%, 60%, 0.7);
   --color-square: hsla(0, 0%, 100%, 0.35);
+
+  --square-0-opacity: 0.4;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -54,14 +56,13 @@ body {
 
   opacity: 0;
   border-radius: 5px;
-  font-size: 15vw;
+  font-size: max(4rem, min(15vw, 15vh));
   text-align: center;
   background-color: var(--color-gameover);
 }
 .gameover-message--visible {
   opacity: 1;
-  transition-duration: 2.5s;
-  transition-delay: 0.5s;
+  transition: opacity 2.5s 0.5s;
 }
 
 .board {
@@ -76,7 +77,7 @@ body {
   background-color: var(--color-board);
 }
 
-.board > div {
+.board > .square {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,14 +88,37 @@ body {
   background-color: var(--color-square);
 }
 
+.square-0 {
+  opacity: var(--square-0-opacity);
+}
+
+.square-new {
+  /* transition: opacity 1s 0.5s; */
+  animation: show-new-square 0.5s ease backwards;
+}
+@keyframes show-new-square {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .control-container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
   gap: 3rem;
 }
 
 .slider-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
 }
 

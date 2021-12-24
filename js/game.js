@@ -6,9 +6,9 @@ class Game {
     this.board = null;
     this.score = null;
     this.size = null;
+    this.newestSquare = null;
 
     const isSaved = localStorage.getItem("boardValues") !== null;
-    console.log(localStorage.getItem("boardValues"))
     if (isSaved) {
       this.load();
     } else {
@@ -42,8 +42,8 @@ class Game {
       .map((_) => Array(size).fill(0));
 
     this.generateBoard(); // Generate HTML board elements
-    this.fillSquare();
-    this.fillSquare();
+    this.fillSquare(false);
+    this.fillSquare(false);
     this.save();
   }
 
@@ -53,6 +53,7 @@ class Game {
       row.map((value) => {
         const square = document.createElement("div");
         square.innerHTML = value !== 0 ? value : "";
+        square.classList.add("square", `square-${value}`);
         this.container.appendChild(square);
         return square;
       })
@@ -60,20 +61,36 @@ class Game {
   }
 
   // Randomly fills an empty position (square) on the board
-  fillSquare() {
+  fillSquare(addNewClass = true) {
     const row = Math.floor(Math.random() * this.size),
       col = Math.floor(Math.random() * this.size),
       squareValue = this.boardValues[row][col];
 
     if (squareValue === 0) {
-      this.setSquare(row, col, 2, true);
+      this.setSquare(row, col, 2, addNewClass);
     } else this.fillSquare();
   }
 
   // Updates a single square of board with the given value
-  setSquare(row, col, value) {
+  setSquare(row, col, value, addNewClass = false) {
+    const square = this.board[row][col];
+
     this.boardValues[row][col] = value;
-    this.board[row][col].innerHTML = value !== 0 ? value : "";
+    square.innerHTML = value !== 0 ? value : "";
+    square.classList.remove(square.classList[1]);
+    square.classList.add(`square-${value}`);
+
+    if (this.newestSquare !== null) {
+      this.newestSquare.classList.remove("square-new");
+    }
+    if (addNewClass) {
+      if (this.newestSquare === square) {
+        // https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f
+        void square.offsetWidth;
+      }
+      square.classList.add("square-new");
+      this.newestSquare = square;
+    }
   }
 
   moveRight() {
@@ -165,7 +182,6 @@ class Game {
             this.boardValues[row]?.[col - 1],
           ].filter((n) => n);
 
-        // console.log(neighbors, current);
         if (current === 0 || neighbors.includes(current)) {
           return;
         }
