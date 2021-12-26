@@ -25,7 +25,7 @@ const sizeDisplay = document.getElementById("boardSizeValue"),
   scoreDisplay = document.getElementById("score"),
   gameoverDisplay = document.getElementById("gameoverScreen");
 
-let game = new Game(boardDisplay);
+let game = new Game(boardDisplay, generateRandomColors());
 const boardDisplaySize = 0.6; // [0, 1]: portion of window size
 
 // -----------------------------------------------------------------------
@@ -41,11 +41,37 @@ function start() {
   updateDisplay();
 }
 
+function generateRandomColors() {
+  let colors = [];
+  const h0 = Math.floor(Math.random() * 255),
+    s0 = 50,
+    l0 = 60;
+
+  for (let i = 0; i < 11; i++) {
+    const h = (h0 + 25 * i) % 255,
+      s = s0 + randomInt(-20, 20),
+      l = l0 + randomInt(-20, 20);
+
+    colors.push(`hsl(${h}, ${s}%, ${l}%)`);
+  }
+  return colors;
+}
+
+// Generates a random int in the given range
+function randomInt(start, end) {
+  return start + Math.round(Math.random() * (end - start));
+}
+
 function addEventListeners() {
   document.addEventListener("keyup", controlKeyUp);
   window.addEventListener("resize", controlResize);
   newGameButton.addEventListener("click", newGame);
   sizeSlider.addEventListener("input", controlSizeSlider);
+  // temp
+  document.getElementById("testButton").addEventListener("click", (_) => {
+    game.test();
+    updateDisplay();
+  });
 }
 
 function updateDisplay() {
@@ -77,6 +103,7 @@ function controlKeyUp(e) {
       break;
   }
 
+  updateFontSize();
   if (game.isGameover) {
     gameoverDisplay.classList.add("gameover-message--visible");
   }
@@ -94,13 +121,19 @@ function newGame() {
 }
 
 function controlResize() {
-  const boardGap = (boardDisplay.clientWidth * 0.2) / game.size,
-    squareFontSize = (boardDisplay.clientWidth * 0.5) / game.size;
+  const boardGap = (boardDisplay.clientWidth * 0.2) / game.size;
 
-  boardDisplay.style.gap = boardGap + "px";
-  Array.from(boardDisplay.children).forEach(
-    (child) => (child.style.fontSize = squareFontSize + "px")
-  );
+  boardDisplay.style.gap = boardGap + "px"; // update board gap
+  updateFontSize();
+}
+
+function updateFontSize() {
+  const squareFontSize = (boardDisplay.clientWidth * 0.5) / game.size;
+
+  Array.from(boardDisplay.children).forEach((child) => {
+    const numberLength = child.innerHTML.length;
+    child.style.fontSize = squareFontSize * (1 - numberLength * 0.12) + "px";
+  });
 }
 
 function controlSizeSlider() {

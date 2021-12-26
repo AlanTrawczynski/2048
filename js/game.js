@@ -1,6 +1,7 @@
 class Game {
-  constructor(container) {
+  constructor(container, colors = null) {
     this.container = container;
+    this.colors = colors;
     this.isGameover = false;
     this.boardValues = null;
     this.board = null;
@@ -22,6 +23,7 @@ class Game {
     this.score = +localStorage.getItem("score");
     this.size = this.boardValues.length;
     this.generateBoard();
+    this.updateColors();
     this.checkGameover();
   }
 
@@ -44,6 +46,7 @@ class Game {
     this.generateBoard(); // Generate HTML board elements
     this.fillSquare(false);
     this.fillSquare(false);
+    this.updateColors();
     this.save();
   }
 
@@ -134,6 +137,7 @@ class Game {
       const combined = this.combineVectors(dir);
       if (moved || combined) {
         this.fillSquare();
+        this.updateColors();
         this.save();
         this.checkGameover();
       }
@@ -190,6 +194,37 @@ class Game {
 
     this.isGameover = true;
     localStorage.clear();
+  }
+
+  updateColors() {
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        const square = this.board[row][col],
+          value = this.boardValues[row][col],
+          colorIndex = Math.log2(value) - 1;
+
+        square.style.backgroundColor =
+          value !== 0 ? this.colors[colorIndex] : null;
+      }
+    }
+  }
+
+  // temp
+  test() {
+    const boardValues = [];
+    for (let i = 0; i < this.size; i++) {
+      const vs = [];
+      for (let j = 0; j < this.size; j++) {
+        const v = 2 ** (this.size*i + j);
+        vs.push(v <= 2048 ? v : 0);
+      }
+      boardValues.push(vs);
+    }
+
+    this.container.innerHTML = "";
+    this.boardValues = boardValues;
+    this.generateBoard();
+    this.updateColors();
   }
 }
 
