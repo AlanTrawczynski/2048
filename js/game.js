@@ -97,8 +97,7 @@ class Game {
 
     this.boardValues[row][col] = value;
     square.innerHTML = value !== 0 ? value : "";
-    square.classList.remove(square.classList[1]);
-    square.classList.add(`square-${value}`);
+    square.classList = `square square-${value}`;
   }
 
   // Moves for each direction
@@ -143,7 +142,6 @@ class Game {
       const combined = this.combineVectors(dir);
       if (moved || combined) {
         this.fillSquare();
-        // this.fillSquare();
         this.updateColors();
         this.save();
         this.checkGameover();
