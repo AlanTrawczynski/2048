@@ -2,6 +2,7 @@ class Game {
   constructor(container, colors = null) {
     this.container = container;
     this.colors = colors;
+    this.isEndgame = false;
     this.isGameover = false;
     this.boardValues = null;
     this.board = null;
@@ -24,7 +25,7 @@ class Game {
     this.size = this.boardValues.length;
     this.generateBoard();
     this.updateColors();
-    this.checkGameover();
+    this.checkEndgame();
   }
 
   // Saves game in localStorage
@@ -36,7 +37,7 @@ class Game {
   // Creates a new game with given size
   newGame(size) {
     this.container.innerHTML = ""; // Removes all child nodes of board container
-    this.isGameover = false;
+    this.isEndgame = false;
     this.score = 0;
     this.size = size;
     this.boardValues = Array(size) // Set boardValues to a matrix of 0s
@@ -144,7 +145,7 @@ class Game {
         this.fillSquare();
         this.updateColors();
         this.save();
-        this.checkGameover();
+        this.checkEndgame();
       }
     }
   }
@@ -179,6 +180,17 @@ class Game {
     return combined;
   }
 
+  checkEndgame() {
+    const gameover = this.checkGameover(),
+      win = this.boardValues.flat().some((v) => v === 2048);
+
+    if (gameover || win) {
+      this.isEndgame = true;
+      localStorage.clear();
+    }
+    this.isGameover = !win;
+  }
+
   checkGameover() {
     // Check for combinable squares
     for (let row = 0; row < this.size; row++) {
@@ -192,13 +204,11 @@ class Game {
           ].filter((n) => n);
 
         if (current === 0 || neighbors.includes(current)) {
-          return;
+          return false;
         }
       }
     }
-
-    this.isGameover = true;
-    localStorage.clear();
+    return true;
   }
 
   updateColors() {
