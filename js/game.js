@@ -44,8 +44,8 @@ class Game {
       .map((_) => Array(size).fill(0));
 
     this.generateBoard(); // Generate HTML board elements
-    this.fillSquare(false);
-    this.fillSquare(false);
+    this.fillSquare();
+    this.fillSquare();
     this.updateColors();
     this.save();
   }
@@ -64,38 +64,44 @@ class Game {
   }
 
   // Randomly fills an empty position (square) on the board
-  fillSquare(addNewClass = true) {
+  fillSquare() {
     const row = Math.floor(Math.random() * this.size),
       col = Math.floor(Math.random() * this.size),
       squareValue = this.boardValues[row][col];
 
     if (squareValue === 0) {
-      this.setSquare(row, col, 2, addNewClass);
+      this.setSquare(row, col, 2);
+      this.addNewClass(row, col);
     } else this.fillSquare();
   }
 
-  // Updates a single square of board with the given value
-  setSquare(row, col, value, addNewClass = false) {
+  // Adds `square-new` class to a single square
+  addNewClass(row, col) {
+    const square = this.board[row][col];
+
+    if (this.newestSquare !== null) {
+      this.newestSquare.classList.remove("square-new");
+
+      // Restart animation (https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f)
+      if (this.newestSquare === square) {
+        void square.offsetWidth;
+      }
+    }
+    square.classList.add("square-new");
+    this.newestSquare = square;
+  }
+
+  // Updates a single square with the given value
+  setSquare(row, col, value) {
     const square = this.board[row][col];
 
     this.boardValues[row][col] = value;
     square.innerHTML = value !== 0 ? value : "";
     square.classList.remove(square.classList[1]);
     square.classList.add(`square-${value}`);
-
-    if (this.newestSquare !== null) {
-      this.newestSquare.classList.remove("square-new");
-    }
-    if (addNewClass) {
-      if (this.newestSquare === square) {
-        // https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f
-        void square.offsetWidth;
-      }
-      square.classList.add("square-new");
-      this.newestSquare = square;
-    }
   }
 
+  // Moves for each direction
   moveRight() {
     this.move("R");
   }
@@ -137,6 +143,7 @@ class Game {
       const combined = this.combineVectors(dir);
       if (moved || combined) {
         this.fillSquare();
+        // this.fillSquare();
         this.updateColors();
         this.save();
         this.checkGameover();
@@ -197,6 +204,10 @@ class Game {
   }
 
   updateColors() {
+    if (this.colors === null) {
+      return;
+    }
+
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         const square = this.board[row][col],
@@ -215,7 +226,7 @@ class Game {
     for (let i = 0; i < this.size; i++) {
       const vs = [];
       for (let j = 0; j < this.size; j++) {
-        const v = 2 ** (this.size*i + j);
+        const v = 2 ** (this.size * i + j);
         vs.push(v <= 2048 ? v : 0);
       }
       boardValues.push(vs);
