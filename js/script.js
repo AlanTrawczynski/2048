@@ -25,7 +25,8 @@ const sizeDisplay = document.getElementById("boardSizeValue"),
   scoreDisplay = document.getElementById("score"),
   endgameDisplay = document.getElementById("endgameScreen");
 
-let game = new Game(boardDisplay, generateRandomColors());
+let game = new Game(boardDisplay, generateRandomColors()),
+  isEndgame = false;
 const boardDisplaySize = 0.6; // [0, 1]: portion of window size
 
 // -----------------------------------------------------------------------
@@ -79,7 +80,7 @@ function updateDisplay() {
 
 // Key up event controller
 function controlKeyUp(e) {
-  if (game.isEndgame) {
+  if (isEndgame) {
     return;
   }
 
@@ -104,8 +105,9 @@ function controlKeyUp(e) {
 
   updateFontSize();
   if (game.isEndgame) {
-    endgameDisplay.innerHTML = game.isGameover ? "Game over" : "You win";
+    endgameDisplay.innerHTML = game.isWin ? "You win" : "Game over";
     endgameDisplay.classList.add("endgame-message--visible");
+    isEndgame = true;
   }
   scoreDisplay.innerHTML = game.score;
 }
@@ -113,6 +115,7 @@ function controlKeyUp(e) {
 function newGame() {
   game.newGame(sizeSlider.valueAsNumber);
   endgameDisplay.classList.remove("endgame-message--visible");
+  isEndgame = false;
   updateDisplay();
 }
 

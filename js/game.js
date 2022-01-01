@@ -2,12 +2,9 @@ class Game {
   constructor(container, colors = null) {
     this.container = container;
     this.colors = colors;
-    this.isEndgame = false;
-    this.isGameover = false;
     this.boardValues = null;
     this.board = null;
     this.score = null;
-    this.size = null;
     this.newestSquare = null;
 
     const isSaved = localStorage.getItem("boardValues") !== null;
@@ -18,14 +15,44 @@ class Game {
     }
   }
 
+  get size() {
+    return this.boardValues.length;
+  }
+
+  get isEndgame() {
+    return this.isWin || this.isGameover;
+  }
+
+  get isWin() {
+    return this.boardValues.flat().some((v) => v === 2048);
+  }
+  get isGameover() {
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        const current = this.boardValues[row][col],
+          neighbors = [
+            this.boardValues[row + 1]?.[col],
+            this.boardValues[row - 1]?.[col],
+            this.boardValues[row]?.[col + 1],
+            this.boardValues[row]?.[col - 1],
+          ].filter((n) => n);
+
+        if (current === 0 || neighbors.includes(current)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // ####################################################################
+
   // Loads and initializes game stored in localStorage
   load() {
     this.boardValues = JSON.parse(localStorage.getItem("boardValues"));
     this.score = +localStorage.getItem("score");
-    this.size = this.boardValues.length;
     this.generateBoard();
     this.updateColors();
-    this.checkEndgame();
   }
 
   // Saves game in localStorage
@@ -37,13 +64,10 @@ class Game {
   // Creates a new game with given size
   newGame(size) {
     this.container.innerHTML = ""; // Removes all child nodes of board container
-    this.isEndgame = false;
     this.score = 0;
-    this.size = size;
     this.boardValues = Array(size) // Set boardValues to a matrix of 0s
       .fill(0)
       .map((_) => Array(size).fill(0));
-
     this.generateBoard(); // Generate HTML board elements
     this.fillSquare();
     this.fillSquare();
@@ -144,8 +168,12 @@ class Game {
       if (moved || combined) {
         this.fillSquare();
         this.updateColors();
-        this.save();
-        this.checkEndgame();
+
+        if (this.isEndgame) {
+          localStorage.clear();
+        } else {
+          this.save();
+        }
       }
     }
   }
@@ -178,37 +206,6 @@ class Game {
       this.move(dir, false);
     }
     return combined;
-  }
-
-  checkEndgame() {
-    const gameover = this.checkGameover(),
-      win = this.boardValues.flat().some((v) => v === 2048);
-
-    if (gameover || win) {
-      this.isEndgame = true;
-      localStorage.clear();
-    }
-    this.isGameover = !win;
-  }
-
-  checkGameover() {
-    // Check for combinable squares
-    for (let row = 0; row < this.size; row++) {
-      for (let col = 0; col < this.size; col++) {
-        const current = this.boardValues[row][col],
-          neighbors = [
-            this.boardValues[row + 1]?.[col],
-            this.boardValues[row - 1]?.[col],
-            this.boardValues[row]?.[col + 1],
-            this.boardValues[row]?.[col - 1],
-          ].filter((n) => n);
-
-        if (current === 0 || neighbors.includes(current)) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   updateColors() {
