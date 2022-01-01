@@ -67,11 +67,6 @@ function addEventListeners() {
   window.addEventListener("resize", controlResize);
   newGameButton.addEventListener("click", newGame);
   sizeSlider.addEventListener("input", controlSizeSlider);
-  // temp
-  document.getElementById("testButton").addEventListener("click", (_) => {
-    game.test();
-    updateDisplay();
-  });
 }
 
 function updateDisplay() {
@@ -89,17 +84,21 @@ function controlKeyUp(e) {
   }
 
   switch (e.keyCode) {
-    case 39:
+    case 39: // →
       game.moveRight();
       break;
-    case 37:
+    case 37: // ←
       game.moveLeft();
       break;
-    case 38:
+    case 38: // ↑
       game.moveUp();
       break;
-    case 40:
+    case 40: // ↓
       game.moveDown();
+      break;
+    case 84: // t: testing
+      game.test();
+      updateDisplay();
       break;
   }
 
