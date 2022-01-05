@@ -81,7 +81,7 @@ class Game {
       row.map((value) => {
         const square = document.createElement("div");
         square.innerHTML = value !== 0 ? value : "";
-        square.classList.add("square", `square-${value}`);
+        square.classList.add("square", `square--${value}`);
         this.container.appendChild(square);
         return square;
       })
@@ -100,19 +100,19 @@ class Game {
     } else this.fillSquare();
   }
 
-  // Adds `square-new` class to a single square
+  // Adds `square--new` class to a single square
   addNewClass(row, col) {
     const square = this.board[row][col];
 
     if (this.newestSquare !== null) {
-      this.newestSquare.classList.remove("square-new");
+      this.newestSquare.classList.remove("square--new");
 
       // Restart animation (https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f)
       if (this.newestSquare === square) {
         void square.offsetWidth;
       }
     }
-    square.classList.add("square-new");
+    square.classList.add("square--new");
     this.newestSquare = square;
   }
 
@@ -122,7 +122,7 @@ class Game {
 
     this.boardValues[row][col] = value;
     square.innerHTML = value !== 0 ? value : "";
-    square.classList = `square square-${value}`;
+    square.classList = `square square--${value}`;
   }
 
   // Moves for each direction

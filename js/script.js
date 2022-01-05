@@ -1,7 +1,5 @@
 "use strict";
 
-// -----------------------------------------------------------------------
-
 // PREAMBULO
 const author = "Alan Trawczynski";
 document.getElementById("author").innerHTML = author;
@@ -22,7 +20,7 @@ const boardDisplay = document.getElementById("board"),
   sizeSlider = document.getElementById("boardSizeSlider");
 
 const sizeDisplay = document.getElementById("boardSizeValue"),
-  scoreDisplay = document.getElementById("score"),
+  scoreDisplay = document.getElementById("scoreValue"),
   endgameDisplay = document.getElementById("endgameScreen");
 
 let game = new Game(boardDisplay, generateRandomColors()),
@@ -49,7 +47,7 @@ function generateRandomColors() {
     l0 = 60;
 
   for (let i = 0; i < 11; i++) {
-    const h = (h0 + 25 * i) % 255,
+    const h = (h0 + (360 / 11) * i) % 360,
       s = s0 + randomInt(-20, 20),
       l = l0 + randomInt(-20, 20);
 
@@ -106,7 +104,7 @@ function controlKeyUp(e) {
   updateFontSize();
   if (game.isEndgame) {
     endgameDisplay.innerHTML = game.isWin ? "You win" : "Game over";
-    endgameDisplay.classList.add("endgame-message--visible");
+    endgameDisplay.classList.add("board-container__message--visible");
     isEndgame = true;
   }
   scoreDisplay.innerHTML = game.score;
@@ -114,7 +112,7 @@ function controlKeyUp(e) {
 
 function newGame() {
   game.newGame(sizeSlider.valueAsNumber);
-  endgameDisplay.classList.remove("endgame-message--visible");
+  endgameDisplay.classList.remove("board-container__message--visible");
   isEndgame = false;
   updateDisplay();
 }
