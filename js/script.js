@@ -42,15 +42,12 @@ function start() {
 
 function generateRandomColors() {
   let colors = [];
-  const h0 = Math.floor(Math.random() * 255),
-    s0 = 50,
-    l0 = 60;
+  const h0 = Math.floor(Math.random() * 360),
+    s = 80,
+    l = 65;
 
   for (let i = 0; i < 11; i++) {
-    const h = (h0 + (360 / 11) * i) % 360,
-      s = s0 + randomInt(-20, 20),
-      l = l0 + randomInt(-20, 20);
-
+    const h = (h0 + (360 / 11) * i) % 360;
     colors.push(`hsl(${h}, ${s}%, ${l}%)`);
   }
   return colors;

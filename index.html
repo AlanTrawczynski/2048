@@ -8,28 +8,37 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+
     <header>
       <p>
         Realizado por
-        <span id="author">author</span>
+        <span class="header__author" id="author">author</span>
       </p>
     </header>
 
+
     <div class="content">
       <div class="content__score">
-        <div class="score__title">score <span id="scoreValue">0</span></div>
+        <div class="score__title">score</div>
+        <div class="score__value" id="scoreValue">0</div>
       </div>
+
 
       <div class="content__board-container">
         <div class="board-container__message" id="endgameScreen"></div>
         <div class="board-container__board" id="board"></div>
       </div>
 
+
       <div class="content__control">
+
         <div class="control__slider-container">
-          <label class="slider-container__label" for="board-size">
-            Board size: <span id="boardSizeValue"></span>
-          </label>
+          <div class="slider-container__label-container">
+            <label class="label-container__title" for="board-size">
+              Board size
+            </label>
+            <span class="label-container__value" id="boardSizeValue"></span>
+          </div>
           <input
             class="slider-container__slider"
             id="boardSizeSlider"
@@ -39,9 +48,12 @@
             name="board-size"
           />
         </div>
+
         <button class="control__new-game" id="newGameButton">New game</button>
+
       </div>
     </div>
+
 
     <script src="js/game.js"></script>
     <script src="js/script.js"></script>

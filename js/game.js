@@ -231,7 +231,7 @@ class Game {
     for (let i = 0; i < this.size; i++) {
       const vs = [];
       for (let j = 0; j < this.size; j++) {
-        const v = 2 ** (this.size * i + j);
+        const v = 2 ** (this.size * i + j + 1);
         vs.push(v <= 2048 ? v : 0);
       }
       boardValues.push(vs);
