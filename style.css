@@ -43,7 +43,7 @@ body {
 }
 
 header {
-  /* display: none; */
+  display: none;
   padding: 1rem 0;
   text-align: center;
   border-bottom: 3px solid var(--header-border-color);
