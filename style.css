@@ -6,6 +6,8 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
+/* ----------------------------------------------------------------------- */
+
 * {
   margin: 0;
   padding: 0;
@@ -15,14 +17,16 @@
 
 :root {
   --color-background: hsl(0, 0%, 0%);
-  --color-endgame: hsla(0, 0%, 0%, 0.8);
+  --color-message: hsla(0, 0%, 0%, 0.8);
   --color-square-0: hsla(0, 0%, 100%, 0.1);
 
   --color-font: hsl(0, 0%, 60%);
-  --color-font-board: var(--color-background);
+  --color-font-square: var(--color-background);
 
   --font: "Lato", sans-serif;
   --font-board: "DM Sans", sans-serif;
+
+  --header-border-color: var(--color-square-0);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -39,14 +43,14 @@ body {
 }
 
 header {
-  display: none;
-  text-align: center;
+  /* display: none; */
   padding: 1rem 0;
-  border-bottom: 3px solid var(--color-square-0);
+  text-align: center;
+  border-bottom: 3px solid var(--header-border-color);
 }
 
 .header__author {
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .content {
@@ -54,10 +58,14 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3rem;
 
+  padding: 1rem 0;
+  gap: 3vh;
   flex-grow: 1;
 }
+
+/* ----------------------------------------------------------------------- */
+/* Score */
 
 .content__score {
   display: flex;
@@ -74,11 +82,15 @@ header {
 
 .score__value {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: bold;
 }
+
+/* ----------------------------------------------------------------------- */
+/* Board & squares */
 
 .content__board-container {
   position: relative;
+  font-family: var(--font-board);
 }
 
 .board-container__message {
@@ -92,27 +104,30 @@ header {
   right: 0;
   bottom: 0;
 
-  opacity: 0;
   border-radius: 5px;
-  font-family: var(--font-board);
   font-size: max(4.5rem, min(18vw, 18vh));
   text-align: center;
-  background-color: var(--color-endgame);
+  background-color: var(--color-message);
+
+  opacity: 0;
+  visibility: hidden;
 }
 .board-container__message--visible {
+  visibility: visible;
   opacity: 1;
-  transition: opacity 2.5s 0.5s;
+  transition: opacity 1.5s 0.5s;
 }
 
 .board-container__board {
   display: grid;
-  /* grid-template dynamically set by js */
+  /* grid-template set by js */
   height: max(250px, min(60vw, 60vh));
   width: max(250px, min(60vw, 60vh));
 
-  /* gap dynamically set by js */
+  /* gap set by js */
   padding: 1rem;
-  color: var(--color-font-board);
+  font-weight: bold;
+  color: var(--color-font-square);
 }
 
 .square {
@@ -120,10 +135,9 @@ header {
   justify-content: center;
   align-items: center;
 
-  /* font-size dynamically set by js */
-  font-weight: bold;
-  font-family: var(--font-board);
+  /* font-size set by js */
   border-radius: 5px;
+  cursor: default;
 }
 
 .square--0 {
@@ -142,6 +156,9 @@ header {
   }
 }
 
+/* ----------------------------------------------------------------------- */
+/* Control */
+
 .content__control {
   display: flex;
   flex-wrap: wrap;
@@ -154,7 +171,6 @@ header {
 .control__slider-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 0.7rem;
 }
@@ -171,9 +187,9 @@ header {
   text-transform: uppercase;
 }
 
-.label-container__value{
+.label-container__value {
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .control__new-game {
@@ -181,10 +197,12 @@ header {
   cursor: pointer;
   border-radius: 5px;
   font-size: 1.5rem;
-  color: var(--color-font);
+  font-family: var(--font);
   border: 2px solid var(--color-font);
-  background-color: var(--color-background);
 
+  color: var(--color-font);
+  background-color: var(--color-background);
+  transition-property: background-color, color;
   transition-duration: 0.5s;
 }
 .control__new-game:hover {

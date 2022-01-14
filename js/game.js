@@ -45,7 +45,8 @@ class Game {
     return true;
   }
 
-  // ####################################################################
+  // --------------------------------------------------------------------
+  // METHODS
 
   // Loads and initializes game stored in localStorage
   load() {
@@ -63,19 +64,19 @@ class Game {
 
   // Creates a new game with given size
   newGame(size) {
-    this.container.innerHTML = ""; // Removes all child nodes of board container
+    this.container.innerHTML = ""; // Removes all child nodes
     this.score = 0;
     this.boardValues = Array(size) // Set boardValues to a matrix of 0s
       .fill(0)
       .map((_) => Array(size).fill(0));
-    this.generateBoard(); // Generate HTML board elements
+    this.generateBoard();
     this.fillSquare();
     this.fillSquare();
     this.updateColors();
     this.save();
   }
 
-  // Generates a board using boardValues data
+  // Generates a board using boardValues data & appends squares to HTML
   generateBoard() {
     this.board = this.boardValues.map((row) =>
       row.map((value) => {
@@ -100,6 +101,15 @@ class Game {
     } else this.fillSquare();
   }
 
+  // Updates a single square with the given value
+  setSquare(row, col, value) {
+    const square = this.board[row][col];
+
+    this.boardValues[row][col] = value;
+    square.innerHTML = value !== 0 ? value : "";
+    square.classList = `square square--${value}`;
+  }
+
   // Adds `square--new` class to a single square
   addNewClass(row, col) {
     const square = this.board[row][col];
@@ -114,15 +124,6 @@ class Game {
     }
     square.classList.add("square--new");
     this.newestSquare = square;
-  }
-
-  // Updates a single square with the given value
-  setSquare(row, col, value) {
-    const square = this.board[row][col];
-
-    this.boardValues[row][col] = value;
-    square.innerHTML = value !== 0 ? value : "";
-    square.classList = `square square--${value}`;
   }
 
   // Moves for each direction
@@ -208,6 +209,7 @@ class Game {
     return combined;
   }
 
+  // Updates squares background-color using `this.colors`
   updateColors() {
     if (this.colors === null) {
       return;
@@ -225,8 +227,10 @@ class Game {
     }
   }
 
-  // temp
-  test() {
+  // --------------------------------------------------------------------
+  // TEST
+
+  testWin() {
     const boardValues = [];
     for (let i = 0; i < this.size; i++) {
       const vs = [];
@@ -236,13 +240,14 @@ class Game {
       }
       boardValues.push(vs);
     }
-
     this.container.innerHTML = "";
     this.boardValues = boardValues;
     this.generateBoard();
     this.updateColors();
   }
 }
+
+// ####################################################################
 
 // Transposes the input matrix
 function transpose(M) {
