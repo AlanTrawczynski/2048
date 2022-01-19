@@ -6,15 +6,42 @@ const author = "Alan Trawczynski";
 document.getElementById("author").innerHTML = author;
 
 // ####################################################################
-// COMENTARIOS
-// ...
+/* COMENTARIOS
+Para implementar la lógica del juego se hizo uso del vídeo proporcionado
+junto a la propuesta del trabajo. Una vez implementado, se llevaron a cabo
+varias mejoras y arreglos (en el recurso se cometían varios fallos).
+Para el resto del código no se han utilizado recursos completos, más allá
+de numerosas búsquedas para resolver problemas concretos.
+Como inspiración evidente, sobretodo para el aspecto visual, se ha utilizado
+el juego original (https://play2048.co/).
+
+El JavaScript del proyecto se divide en 2 archivos principales:
+  - game.js: contiene la clase Game que codifica toda la lógica del juego.
+  - script.js: es este archivo, y comunica la lógica de juego de game.js
+    con la interfaz de usuario.
+
+Se ha intentado crear un código lo más legible posible, creo que los nombres
+son bastante explicativos. En cualquier caso, se han documentado las funciones.
+Me he tomado el permiso de modificar la función `comienzo()`, exigida en el
+enunciado, por la función `start()`, puesto que el código hace uso del inglés.
+
+El juego se controla mediante las flechas ↑ ↓ ← → (alternativamente, w a s d).
+Adicionalmente, utilizando la tecla `t`, podemos probar la pantalla de victoria.
+
+La implementación soporta diferentes tamaños de tablero. Esto ha supuesto que,
+para poder hacer la interfaz completamente responsiva, algunas de las
+propiedades CSS han de ser definidas y actualizadas mediante JavaScript (en
+script.js) durante la ejecución de la aplicación, concretamente:
+  - El grid-template del tablero se modifica en updateDisplay().
+  - El gap del tablero se modifica en updateBoardGap().
+  - El font-size de cada casilla se modifica en updateSquaresFontSize().
+*/
 
 // ####################################################################
 // VARIABLES
 
 // --------------------------------------------------------------------
 // Interacción
-
 const newGameButton = document.getElementById("newGameButton"),
   sizeSlider = document.getElementById("boardSizeSlider");
 
@@ -23,7 +50,6 @@ sizeSlider.addEventListener("input", controlSizeSlider);
 
 // --------------------------------------------------------------------
 // Informativos
-
 const boardDisplay = document.getElementById("board"),
   sizeDisplay = document.getElementById("boardSizeValue"),
   scoreDisplay = document.getElementById("scoreValue"),
@@ -40,6 +66,10 @@ let game, isEndgame;
 // --------------------------------------------------------------------
 // Start
 
+/**
+ * Crea el juego, añade los controlardores de eventos, e inicializa la
+ * información de la interfaz (incluyendo algunas propiedades CSS).
+ */
 function start() {
   game = new Game(boardDisplay, generateRandomColors());
   isEndgame = false;
@@ -52,7 +82,10 @@ function start() {
 // --------------------------------------------------------------------
 // Auxiliares
 
-// Returns an array of randomly generated colors
+/**
+ * Genera un array de 11 colores aleatorios, representados en forma de string.
+ * @returns Array de 11 strings
+ */
 function generateRandomColors() {
   let colors = [];
   const h0 = Math.floor(Math.random() * 360),
@@ -66,12 +99,23 @@ function generateRandomColors() {
   return colors;
 }
 
-// Generates a random int in the given range
+/**
+ * Genera un número entero aleatorio enel rango `(start, end)`.
+ * @param {*} start Valor mínimo a generar
+ * @param {*} end Valor máximo a generar
+ * @returns
+ */
 function randomInt(start, end) {
   return start + Math.round(Math.random() * (end - start));
 }
 
-// Updates game information and board's gridTemplate
+/**
+ * Actualiza:
+ * - La información del juego en la interfaz (score y board size).
+ * - El grid-template del tablero, que define el número de columnas y filas.
+ * - El gap del tablero.
+ * - El font-size de cada casilla en el tablero.
+ */
 function updateDisplay() {
   scoreDisplay.innerHTML = game.score;
   sizeDisplay.innerHTML = game.size;
@@ -81,7 +125,11 @@ function updateDisplay() {
   updateSquaresFontSize();
 }
 
-// Updates fontSize of each square in the board
+/**
+ * Actualiza el font-size de cada casilla en el tablero, teniendo en cuenta
+ * el tamaño de la pantalla, del tablero y la cantidad de cifras en el
+ * número de la casilla.
+ */
 function updateSquaresFontSize() {
   const squareFontSize = (boardDisplay.clientWidth * 0.5) / game.size;
 
@@ -91,7 +139,10 @@ function updateSquaresFontSize() {
   });
 }
 
-// Updates board's gap
+/**
+ * Actualiza el gap del tablero, teniendo en cuenta el tamaño de pantalla
+ * y del tablero.
+ */
 function updateBoardGap() {
   const boardGap = (boardDisplay.clientWidth * 0.2) / game.size;
   boardDisplay.style.gap = boardGap + "px";
@@ -100,7 +151,9 @@ function updateBoardGap() {
 // --------------------------------------------------------------------
 // Eventos
 
-// newGameButton click event controller
+/**
+ * Inicia un juego nuevo con el tamaño indicado por el slider.
+ */
 function newGame() {
   game.newGame(sizeSlider.valueAsNumber);
   isEndgame = false;
@@ -108,12 +161,21 @@ function newGame() {
   updateDisplay();
 }
 
-// sizeSlider input event controller
+/**
+ * Actualiza el texto del elemento que muestra el tamaño del juego.
+ */
 function controlSizeSlider() {
   sizeDisplay.innerHTML = sizeSlider.value;
 }
 
-// KeyUp event controller
+/**
+ * Controla la pulsación de teclas:
+ * - w, ↑: movimiento hacia arriba
+ * - a, ←: movimiento hacia la izquierda
+ * - s, ↓: movimiento hacia abajo
+ * - d, →: movimiento hacia la derecha
+ * - t: permite comprobar el funcionamiento de la interfaz ante una victoria
+ */
 function controlKeyUp(e) {
   if (isEndgame) {
     return;
@@ -153,7 +215,11 @@ function controlKeyUp(e) {
   }
 }
 
-// Resize event controller
+/**
+ * Actualiza:
+ * - El gap del tablero.
+ * - El font-size de cada casilla en el tablero.
+ */
 function controlResize() {
   updateBoardGap();
   updateSquaresFontSize();

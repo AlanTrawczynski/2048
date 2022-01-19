@@ -43,7 +43,6 @@ body {
 }
 
 header {
-  display: none;
   padding: 1rem 0;
   text-align: center;
   border-bottom: 3px solid var(--header-border-color);
@@ -120,11 +119,11 @@ header {
 
 .board-container__board {
   display: grid;
-  /* grid-template set by js */
+  /* grid-template definido dinámicamente en script.js*/
   height: max(250px, min(60vw, 60vh));
   width: max(250px, min(60vw, 60vh));
 
-  /* gap set by js */
+  /* gap definido dinámicamente en script.js*/
   padding: 1rem;
   font-weight: bold;
   color: var(--color-font-square);
@@ -135,7 +134,7 @@ header {
   justify-content: center;
   align-items: center;
 
-  /* font-size set by js */
+  /* font-size definido dinámicamente en script.js*/
   border-radius: 5px;
   cursor: default;
 }

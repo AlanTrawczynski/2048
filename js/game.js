@@ -1,4 +1,20 @@
+/**
+ * Clase que condifica toda la lógica del juego 2048.
+ *
+ * Su única interacción con el HTML es la creación de una serie de `div`s
+ * que representan las casillas del tablero, insertándolas en el contendor
+ * pasado como parámetro al constructor. Además, las clases de las
+ * casillas son actualizadas a medida que cambia el estado del juego.
+ *
+ * Como parámetro opcional en el constructor, puede incluirse un array de
+ * strings con el color asociado a cada tipo de casilla.
+ */
 class Game {
+  /**
+   * Constructor de la clase Game.
+   * @param {*} container Contenedor en el que se incluirán las casillas del juego
+   * @param {*} colors Colores asciados a cada uno de los tipos de casilla
+   */
   constructor(container, colors = null) {
     this.container = container;
     this.colors = colors;
@@ -15,17 +31,30 @@ class Game {
     }
   }
 
+  /**
+   * Devuelve el tamaño del tablero.
+   */
   get size() {
     return this.boardValues.length;
   }
 
+  /**
+   * `true` si el estado del juego es una derrota o victoria.
+   */
   get isEndgame() {
     return this.isWin || this.isGameover;
   }
 
+  /**
+   * `true` si el estado del juego es victoria.
+   */
   get isWin() {
     return this.boardValues.flat().some((v) => v === 2048);
   }
+
+  /**
+   * `true` si el estado del juego es derrota.
+   */
   get isGameover() {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
@@ -48,7 +77,9 @@ class Game {
   // --------------------------------------------------------------------
   // METHODS
 
-  // Loads and initializes game stored in localStorage
+  /**
+   * Carga el estado del juego guardado en `localStorage`.
+   */
   load() {
     this.boardValues = JSON.parse(localStorage.getItem("boardValues"));
     this.score = +localStorage.getItem("score");
@@ -56,13 +87,18 @@ class Game {
     this.updateColors();
   }
 
-  // Saves game in localStorage
+  /** 
+   * Guarda el estado del juego en `localStorage`.
+  */
   save() {
     localStorage.setItem("boardValues", JSON.stringify(this.boardValues));
     localStorage.setItem("score", this.score);
   }
 
-  // Creates a new game with given size
+ /**
+  * Inicializa un nuevo juego con un tablero de tamaño `size`.
+  * @param {*} size Tamaño del tablero del nuevo juego
+  */
   newGame(size) {
     this.container.innerHTML = ""; // Removes all child nodes
     this.score = 0;
@@ -76,7 +112,10 @@ class Game {
     this.save();
   }
 
-  // Generates a board using boardValues data & appends squares to HTML
+  /**
+   * Utilizando los valores de `this.boardValues`, crea los `div`s que
+   * representan las casillas del tablero, insertándolas en `this.container`.
+   */
   generateBoard() {
     this.board = this.boardValues.map((row) =>
       row.map((value) => {
@@ -89,7 +128,10 @@ class Game {
     );
   }
 
-  // Randomly fills an empty position (square) on the board
+  /** 
+   * Rellena una posición aleatoria del tablero con una casilla de tipo 2
+   * y le añade la clase `square--new`.
+  */
   fillSquare() {
     const row = Math.floor(Math.random() * this.size),
       col = Math.floor(Math.random() * this.size),
@@ -101,7 +143,13 @@ class Game {
     } else this.fillSquare();
   }
 
-  // Updates a single square with the given value
+  /**
+   * Actualiza los valores de la casilla `[row, col]` del tablero con
+   * el valor `value`.
+   * @param {*} row Fila de la casilla a actualizar
+   * @param {*} col Columna de la casilla a actualizar
+   * @param {*} value Nuevo valor de la casilla a actualizar
+   */
   setSquare(row, col, value) {
     const square = this.board[row][col];
 
@@ -110,14 +158,21 @@ class Game {
     square.classList = `square square--${value}`;
   }
 
-  // Adds `square--new` class to a single square
+  /**
+   * Añade la clase `square--new` a la casilla `[row, col]` del tablero,
+   * eliminándola de la casilla que la tuviera anteriormente.
+   * @param {*} row Fila de la casilla a actualizar
+   * @param {*} col Columna de la casilla a actualizar
+   */
   addNewClass(row, col) {
     const square = this.board[row][col];
 
     if (this.newestSquare !== null) {
       this.newestSquare.classList.remove("square--new");
 
-      // Restart animation (https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f)
+      // Si la casilla a la que vamos a añadir la clase se encuentra en la
+      // misma posición que la que la tenía anteriormente, debemos de
+      // reiniciar la animación (https://betterprogramming.pub/how-to-restart-a-css-animation-with-javascript-and-what-is-the-dom-reflow-a86e8b6df00f)
       if (this.newestSquare === square) {
         void square.offsetWidth;
       }
@@ -126,21 +181,36 @@ class Game {
     this.newestSquare = square;
   }
 
-  // Moves for each direction
+  /** 
+   * Realiza un movimiento hacia la derecha
+  */
   moveRight() {
     this.move("R");
   }
+  /** 
+   * Realiza un movimiento hacia la izquierda
+  */
   moveLeft() {
     this.move("L");
   }
+  /** 
+   * Realiza un movimiento hacia arriba
+  */
   moveUp() {
     this.move("U");
   }
+  /** 
+   * Realiza un movimiento hacia abajo
+  */
   moveDown() {
     this.move("D");
   }
 
-  // Moves the squares in `dir` direction
+  /**
+   * Realiza un movimiento en la dirección indicada por `dir`.
+   * @param {*} dir "U": up, "L": left, "R": right, "D": down
+   * @param {*} combine Si es `true`, se realiza una combinación de casillas tras el movimiento
+   */
   move(dir, combine = true) {
     let moved = false;
     const isHorizontal = ["R", "L"].includes(dir),
@@ -180,6 +250,11 @@ class Game {
   }
 
   // Combines rows or columns after each move
+  /**
+   * Combina las casillas por filas o columnas, en los 2 posibles sentidos.
+   * @param {*} dir Indica la dirección en la que vamos a combinar
+   * @returns 
+   */
   combineVectors(dir) {
     let combined = false;
     const isHorizontal = ["R", "L"].includes(dir),
@@ -209,7 +284,10 @@ class Game {
     return combined;
   }
 
-  // Updates squares background-color using `this.colors`
+  /** 
+   * Actualiza los colores de cada casilla del tablero si `this.colors`
+   * fue definido al crear el objeto Game.
+  */
   updateColors() {
     if (this.colors === null) {
       return;
@@ -230,6 +308,9 @@ class Game {
   // --------------------------------------------------------------------
   // TEST
 
+  /**
+   * Función para testear el estado de victoria.
+   */
   testWin() {
     const boardValues = [];
     for (let i = 0; i < this.size; i++) {
@@ -249,7 +330,11 @@ class Game {
 
 // ####################################################################
 
-// Transposes the input matrix
+/**
+ * Transpone la matriz de entrada.
+ * @param {*} M Matriz a transponer
+ * @returns Matriz `M` transpuesta
+ */
 function transpose(M) {
   return M[0].map((_, i) => M.map((row) => row[i]));
 }
